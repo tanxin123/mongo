@@ -162,7 +162,11 @@ namespace Mongodb4Log
         {
             try
             {
-                client = new MongoClient(_ConnectionString);
+                if (client == null)
+                {
+                    client = new MongoClient(_ConnectionString);
+                }
+
                 database = client.GetDatabase(_Database);
 
 
@@ -182,12 +186,16 @@ namespace Mongodb4Log
             {
                 Priority = priority,
                 Datetime = DateTime.Now,
-
+                CurrentThread = _Thread == 1 ? System.Threading.Thread.CurrentThread.ManagedThreadId : 0,
                 MessageInfo = message
-
             };
             _Message = messageInfo;
             return messageInfo;
+        }
+
+        public void SetMongoConfig(MongoClientSettings settings)
+        {
+            client = new MongoClient(settings);
         }
 
         public void InsertAsync(string message, PriorityInfo priority)
