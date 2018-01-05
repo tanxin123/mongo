@@ -14,46 +14,25 @@ namespace Mongodb4Log
     /// </summary>
     public sealed class MongbdLog
     {
-        private static volatile MongbdLog instance;
-        private static readonly object obj = new object();
-        private MongbdLog()
+        public MongbdLog()
         {
+
+        }
+        public MongbdLog(string url)
+        {
+            client = new MongoClient(url);
             InitConfig();
             InitMongo();
-            InitMessage();
         }
-        public static MongbdLog Instance
+        public MongbdLog(MongoClientSettings settings)
         {
-            get
-            {
-                if (null == instance)
-                {
-                    lock (obj)
-                    {
-                        if (null == instance)
-                        {
-                            instance = new MongbdLog();
-                        }
-                    }
-
-                }
-                return instance;
-            }
+            client = new MongoClient(settings);
+            InitConfig();
+            InitMongo();
         }
 
         #region 属性
-        public string ConnectionString
-        {
-            get
-            {
-                return _ConnectionString;
-            }
 
-            set
-            {
-                _ConnectionString = value;
-            }
-        }
 
         public int Function
         {
@@ -135,7 +114,7 @@ namespace Mongodb4Log
         #endregion
 
         #region 字段
-        private string _ConnectionString;
+
         private string _Database;
         private int _Function;
         private int _Thread;
@@ -146,7 +125,7 @@ namespace Mongodb4Log
 
         private void InitConfig()
         {
-            _ConnectionString = MongbdLogUtil.GetByKey("ConnectionString");
+            //_ConnectionString = MongbdLogUtil.GetByKey("ConnectionString");
             _Database = MongbdLogUtil.GetByKey("Database");
             int.TryParse(MongbdLogUtil.GetByKey("ConnectionString"), out _Function);
             int.TryParse(MongbdLogUtil.GetByKey("Thread"), out _Thread);
@@ -162,13 +141,7 @@ namespace Mongodb4Log
         {
             try
             {
-                if (client == null)
-                {
-                    client = new MongoClient(_ConnectionString);
-                }
-
-                database = client.GetDatabase(_Database);
-
+                database = client.GetDatabase(_Database); 
 
                 collection = database.GetCollection<Message>("log_" + DateTime.Now.ToString("yyyy_MM_dd"));
 

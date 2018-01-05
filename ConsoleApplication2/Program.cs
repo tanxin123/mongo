@@ -12,25 +12,10 @@ namespace ConsoleApplication2
     {
         static void Main(string[] args)
         {
-            //string mesg1 = "mesg1";
-            //string mesg2 = "mesg2";
-            //string mesg3 = "mesg3";
-            //string mesg4 = "mesg4";
 
-
-            //string connectionString = "mongodb://localhost:27017";
-            //var client = new MongoClient(connectionString);
-            //var database = client.GetDatabase("log4mongo");
-            //var collection = database.GetCollection<Message>("message");
-            //collection.InsertOne(new Message()
-            //{
-            //    //datetime = DateTime.Now,
-            //    //priority = "info",
-            //    //message = mesg1
-            //});
-
-            MongbdLog log = MongbdLog.Instance;
-            log.InsertAsync("我是测试数据,不用管",PriorityInfo.Debug);
+            MongbdLog log = new MongbdLog("mongodb://localhost:27017");
+            log.InsertAsync("我是测试数据,不用管", PriorityInfo.Debug);
+            Console.ReadLine();
         }
 
     }
